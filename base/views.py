@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Room
+from .models import Room, Topic
 from .forms import RoomForm
 
 # Create your views here.
@@ -10,8 +10,9 @@ from .forms import RoomForm
 # ]
 
 def home(request):
+    topics = Topic.objects.all()
     rooms = Room.objects.all()
-    context = {"rooms": rooms}
+    context = {"rooms": rooms, "topics": topics}
     return render(request, 'base/home.html', context)
 
 def room(request, pk):
