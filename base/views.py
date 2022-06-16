@@ -1,14 +1,35 @@
+from email import message
 from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 from django.db.models import Q
 from .models import Room, Topic
 from .forms import RoomForm
 
-# Create your views here.
-# rooms = [
-#     {'id': 1, 'name': 'Lets learn Python'},
-#     {'id': 2, 'name': 'Lets learn JavaScript'},
-#     {'id': 3, 'name': 'Lets learn Shell Scripting'},
-# ]
+
+def login_page(request):
+    context = {}
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+
+        try:
+            user = User.objects.get(username=username)
+            user = authenticate(request, username=username, password=password)
+            if user:
+                login(request, user)
+                return redirect('home')
+            else:
+                messages.error(request, "Invalid username or password")
+        except:
+            messages.error(request, 'Username not found')
+
+    return render(request, 'base/login_register.html', context)
+
+def logout_user(request):
+    logout(request)
+    return redirect('home')
 
 def home(request):
     q = request.GET.get('q') if request.GET.get('q') else ''
