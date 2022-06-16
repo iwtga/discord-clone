@@ -10,8 +10,9 @@ from .forms import RoomForm
 # ]
 
 def home(request):
+    q = request.GET.get('q') if request.GET.get('q') else ''
     topics = Topic.objects.all()
-    rooms = Room.objects.all()
+    rooms = Room.objects.filter(topic__name__contains = q)
     context = {"rooms": rooms, "topics": topics}
     return render(request, 'base/home.html', context)
 
