@@ -28,3 +28,21 @@ def create_room(request):
     form = RoomForm()
     context = {'form': form}
     return render(request, 'base/room_form.html', context)
+
+def update_room(request, pk):
+    room = Room.objects.get(id=pk)
+    form = RoomForm(instance=room)
+    context = {'form': form}
+    if request.method == "POST":
+        form = RoomForm(request.POST, instance=room)
+        form.save()
+        return redirect('home')
+    return render(request, 'base/room_form.html', context)
+
+def delete_room(request, pk):
+    room = Room.objects.get(id=pk)
+    context = {'obj': room}
+    if request.method == "POST":
+        room.delete()
+        return redirect('home')
+    return render(request, 'base/delete.html', context)
