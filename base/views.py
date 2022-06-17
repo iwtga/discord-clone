@@ -72,6 +72,15 @@ def home(request):
     return render(request, 'base/home.html', context)
 
 
+def profile_page(request, pk):
+    user = User.objects.get(id=pk)
+    topics = Topic.objects.all()
+    rooms = user.room_set.all()
+    rmsgs = user.message_set.all()
+    context = {'user': user, "topics": topics, "rooms": rooms, "rmsgs": rmsgs}
+    return render(request, 'base/profile.html', context)
+    
+
 def room(request, pk):
     room = Room.objects.get(id=pk)
     rmsgs = room.message_set.all().order_by('-updated')
