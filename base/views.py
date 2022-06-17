@@ -71,14 +71,16 @@ def home(request):
 def room(request, pk):
     room = Room.objects.get(id=pk)
     rmsgs = room.message_set.all().order_by('-updated')
+    participants = room.participants.all()
     if request.method == "POST":
         message = Message.objects.create(
             user = request.user,
             room = room,
             body = request.POST.get("body")
         )
+        room.participants.add(request.user)
         return redirect('room', pk=room.id)
-    return render(request, 'base/room.html', {'room': room, 'rmsgs': rmsgs})
+    return render(request, 'base/room.html', {'room': room, 'rmsgs': rmsgs, 'participants': participants})
 
 @login_required(login_url='login')
 def create_room(request):
