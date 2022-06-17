@@ -15,7 +15,7 @@ def login_page(request):
 
     if request.user.is_authenticated:
         return redirect('home')
-    
+
     if request.method == "POST":
         username = request.POST.get("username").lower()
         password = request.POST.get("password")
@@ -60,11 +60,15 @@ def logout_user(request):
 def home(request):
     q = request.GET.get('q') if request.GET.get('q') else ''
     topics = Topic.objects.all()
-    rooms = Room.objects.filter(Q(topic__name__icontains = q) |
-                                Q(name__icontains = q) |
-                                Q(description__icontains = q) |
-                                Q(host__username__icontains = q))
-    context = {"rooms": rooms, "topics": topics, "room_count": rooms.count()}
+    rooms = Room.objects.filter(Q(topic__name__icontains=q) |
+                                Q(name__icontains=q) |
+                                Q(description__icontains=q) |
+                                Q(host__username__icontains=q))
+    rmsgs = Message.objects.filter(Q(body__icontains=q) |
+                                   Q(room__name__icontains=q) |
+                                   Q(room__topic__name__icontains=q))
+    context = {"rooms": rooms, "topics": topics,
+               "room_count": rooms.count(), 'rmsgs': rmsgs}
     return render(request, 'base/home.html', context)
 
 
@@ -74,13 +78,14 @@ def room(request, pk):
     participants = room.participants.all()
     if request.method == "POST":
         message = Message.objects.create(
-            user = request.user,
-            room = room,
-            body = request.POST.get("body")
+            user=request.user,
+            room=room,
+            body=request.POST.get("body")
         )
         room.participants.add(request.user)
         return redirect('room', pk=room.id)
     return render(request, 'base/room.html', {'room': room, 'rmsgs': rmsgs, 'participants': participants})
+
 
 @login_required(login_url='login')
 def create_room(request):
@@ -92,6 +97,7 @@ def create_room(request):
     form = RoomForm()
     context = {'form': form}
     return render(request, 'base/room_form.html', context)
+
 
 @login_required(login_url='login')
 def update_room(request, pk):
@@ -108,6 +114,7 @@ def update_room(request, pk):
         return redirect('home')
     return render(request, 'base/room_form.html', context)
 
+
 @login_required(login_url='login')
 def delete_room(request, pk):
     room = Room.objects.get(id=pk)
@@ -118,6 +125,7 @@ def delete_room(request, pk):
         room.delete()
         return redirect('home')
     return render(request, 'base/delete.html', context)
+
 
 @login_required(login_url='login')
 def delete_message(request, pk):
