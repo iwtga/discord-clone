@@ -2,4 +2,21 @@
 
 {% block content %}
 <h1>{{room.name}}</h1>
+<p>{{room.description}}</p>
+<h3>Conversations:</h3>
+<hr>
+{% for rmsg in rmsgs %}
+<div>
+    <small>@{{rmsg.user}} {{rmsg.updated|timesince}} ago</small>
+    <p>{{rmsg.body}}</p>
+    <hr>
+</div>
+{% endfor %}
+
+{% if request.user.is_authenticated %}
+<form method="POST" action="">
+    {% csrf_token %}
+    <input type="text" name="body" placeholder="Enter your message here...">
+</form>
+{% endif %}
 {% endblock %}

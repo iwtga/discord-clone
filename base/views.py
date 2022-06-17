@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.db.models import Q
-from .models import Room, Topic
+from .models import Room, Topic, Message
 from .forms import RoomForm
 
 
@@ -69,9 +69,16 @@ def home(request):
 
 
 def room(request, pk):
-    context = {"room": None}
-    context["room"] = Room.objects.get(id=pk)
-    return render(request, 'base/room.html', context)
+    room = Room.objects.get(id=pk)
+    rmsgs = room.message_set.all().order_by('-updated')
+    if request.method == "POST":
+        message = Message.objects.create(
+            user = request.user,
+            room = room,
+            body = request.POST.get("body")
+        )
+        return redirect('room', pk=room.id)
+    return render(request, 'base/room.html', {'room': room, 'rmsgs': rmsgs})
 
 @login_required(login_url='login')
 def create_room(request):
