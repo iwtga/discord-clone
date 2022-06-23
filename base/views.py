@@ -1,3 +1,4 @@
+from unicodedata import name
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.http import HttpResponse
@@ -79,7 +80,7 @@ def profile_page(request, pk):
     rmsgs = user.message_set.all()
     context = {'user': user, "topics": topics, "rooms": rooms, "rmsgs": rmsgs}
     return render(request, 'base/profile.html', context)
-    
+
 
 def room(request, pk):
     room = Room.objects.get(id=pk)
@@ -99,14 +100,20 @@ def room(request, pk):
 @login_required(login_url='login')
 def create_room(request):
     if request.method == "POST":
-        form = RoomForm(request.POST)
-        if form.is_valid():
-            room = form.save(commit=False)
-            room.host = request.user
-            room.save()
-            return redirect('home')
+        topic_name = request.POST.get('topic')
+        topic, created = Topic.objects.get_or_create(name=topic_name)
+
+        Room.objects.create(
+            host=request.user,
+            topic=topic,
+            name=request.POST.get('name'),
+            description=request.POST.get('description'),
+        )
+
+        return redirect('home')
     form = RoomForm()
-    context = {'form': form}
+    topics = Topic.objects.all()
+    context = {'form': form, 'topics': topics}
     return render(request, 'base/room_form.html', context)
 
 
@@ -114,11 +121,11 @@ def create_room(request):
 def update_room(request, pk):
     room = Room.objects.get(id=pk)
     form = RoomForm(instance=room)
-
+    topics = Topic.objects.all()
     if request.user != room.host:
         return HttpResponse("You are not authorized to perform the action!")
 
-    context = {'form': form}
+    context = {'form': form, 'topics': topics}
     if request.method == "POST":
         form = RoomForm(request.POST, instance=room)
         form.save()
