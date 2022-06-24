@@ -60,7 +60,7 @@ def logout_user(request):
 
 def home(request):
     q = request.GET.get('q') if request.GET.get('q') else ''
-    topics = Topic.objects.all()
+    topics = Topic.objects.all()[:5]
     rooms = Room.objects.filter(Q(topic__name__icontains=q) |
                                 Q(name__icontains=q) |
                                 Q(description__icontains=q) |
@@ -170,3 +170,8 @@ def update_user(request):
             return redirect('profile-page', pk=user.id)
 
     return render(request, 'base/update-user.html', {'form':form})
+
+def topics_page(request):
+    q = request.GET.get('q') if request.GET.get('q') else ''
+    topics = Topic.objects.filter(name__icontains=q)
+    return render(request, 'base/topics.html', {'topics': topics})
