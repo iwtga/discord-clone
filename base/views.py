@@ -175,3 +175,7 @@ def topics_page(request):
     q = request.GET.get('q') if request.GET.get('q') else ''
     topics = Topic.objects.filter(name__icontains=q)
     return render(request, 'base/topics.html', {'topics': topics})
+
+def activity_page(request):
+    rmsgs = Message.objects.all()
+    return render(request, 'base/activity.html', {'rmsgs': rmsgs})
