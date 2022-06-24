@@ -1,5 +1,5 @@
 # Discord-clone
-    ![Discord Clone](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTysY7z6bIFy61MVQHGEK-f8xO2BpW5Ln_z-A&usqp=CAU "Discord Clone")
+![Discord Clone](./static/images/Discord-Clone.png "Discord Clone")
 
 # Technologies
 * Django
@@ -25,10 +25,10 @@ A discord clone here users can create/join rooms regarding a certain topic and c
 
 # Installation
 #install dependencies
-$ python manage.py runserver
-$ python manage.py makemigrations
-$ python manage.py migrate
-$ python manage.py createsuperuser
+*  $ python manage.py runserver
+*  $ python manage.py makemigrations
+*  $ python manage.py migrate
+*  $ python manage.py createsuperuser
 
 # Features
 * Real time messaging
