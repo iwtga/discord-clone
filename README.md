@@ -1,6 +1,5 @@
 # Discord-clone
-
-Markup : ![Discord Clone](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTysY7z6bIFy61MVQHGEK-f8xO2BpW5Ln_z-A&usqp=CAU "Discord Clone")
+ ![Discord Clone](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTysY7z6bIFy61MVQHGEK-f8xO2BpW5Ln_z-A&usqp=CAU "Discord Clone")
 
 # Technologies
 # Screenshot
